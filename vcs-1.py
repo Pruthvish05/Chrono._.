@@ -32,5 +32,8 @@ def add(filename):
     with open('.chrono/index.json', 'w') as f:
         json.dump(index, f,indent=4) 
     print(f"File added: {filename} (Hash: {file_hash})")
+# Example usage:
+add('example.txt')
+
 
 
