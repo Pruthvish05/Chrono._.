@@ -1,0 +1,8 @@
+{
+    "files": {
+        "example.txt": "0221a15d1cda4c83878cbca91bafbfa61fc4ed9c"
+    },
+    "message": "Initial commit with example.txt",
+    "parent": "400e756524d8b10f100cdcc65bd84577e848384e",
+    "timestamp": 1774815314
+}
