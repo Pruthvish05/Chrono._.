@@ -35,7 +35,7 @@ def add(filename):
     with open('.chrono/index.json', 'w') as f:
         json.dump(index, f,indent=4) 
     print(f"File added: {filename} (Hash: {file_hash})")
-def commit(message):
+def commit(message: str):
     if not message:
         print("Commit message cannot be empty.")
         return
@@ -68,8 +68,26 @@ def commit(message):
         json.dump({}, f)
     print(f"Commit created: {commit_hash} with message: '{message}'")
 
+def log():
+    with open('.chrono/HEAD', 'r') as f:
+        current_commit = f.read().strip()
+    while current_commit:
+        commit_path = f'.chrono/commits/{current_commit}.json'
+        if not os.path.exists(commit_path):
+            break
+        with open(commit_path, 'r') as f:
+            commit_data = json.load(f)
+        print(f"Commit: {current_commit}")
+        print(f"Message: {commit_data['message']}")
+        print(f"Timestamp: {commit_data['timestamp']}")
+        print("-" * 40)
+        current_commit = commit_data['parent']
+    if not current_commit:
+        print("No commits found.")
 # Example usage:
-commit('Initial commit with example.txt')
+# add('example.txt')
+# commit(' something didn\'t work')
+log()
 
 
 
