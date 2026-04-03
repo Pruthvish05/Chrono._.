@@ -85,14 +85,15 @@ def log():
         print(f"Timestamp: {commit_data['timestamp']}")
         print("-" * 40)
         current_commit = commit_data['parent']
-
+def checkout()
 # Example usage:
 # init()
 # add('example.txt')
 # commit(' something didn\'t work')
 #log()
-commit(' added example-2.txt')
-log()
+#add('example-2.txt')
+#commit(' added example-2.txt')
+# log()
 
 
 
