@@ -71,6 +71,9 @@ def commit(message: str):
 def log():
     with open('.chrono/HEAD', 'r') as f:
         current_commit = f.read().strip()
+    if not current_commit:
+        print("No commits found.")
+        return
     while current_commit:
         commit_path = f'.chrono/commits/{current_commit}.json'
         if not os.path.exists(commit_path):
@@ -82,12 +85,15 @@ def log():
         print(f"Timestamp: {commit_data['timestamp']}")
         print("-" * 40)
         current_commit = commit_data['parent']
-    if not current_commit:
-        print("No commits found.")
+
 # Example usage:
+# init()
 # add('example.txt')
 # commit(' something didn\'t work')
+#log()
+commit(' added example-2.txt')
 log()
+
 
 
 
