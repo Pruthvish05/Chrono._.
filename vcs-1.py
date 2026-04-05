@@ -1,9 +1,10 @@
-#in this we will create our db in to the system namly
-#.chrono/ and in that two folders objects/ , commits/ 
+
 #am also tryna build a habit of writing comments and code in modules so that it can be easily read and maintained in future
 import os
 import json
 import hashlib
+#in this we will create our db in to the system namly
+#.chrono/ and in that two folders objects/ , commits/ 
 def init():
     print(f"Initializing Chrono repository... in {os.getcwd()}")
     if not os.path.exists('.chrono'):
@@ -16,6 +17,8 @@ def init():
         print("Chrono repository initialized.")
     else:
         print("Chrono repository already exists.")
+#this is a function that well as the name suggests adds a file lol
+#to the area u gotta create the file before hand though.
 def add(filename):
     if not os.path.exists(filename):
         print(f"File '{filename}' does not exist.")
@@ -34,6 +37,8 @@ def add(filename):
     with open('.chrono/index.json', 'w') as f:
         json.dump(index, f,indent=4) 
     print(f"File added: {filename} (Hash: {file_hash})")
+#commits the message and the files in which you are working not cool yet,
+#more work is needed.
 def commit(message: str):
     if not message:
         print("Commit message cannot be empty.")
@@ -66,7 +71,8 @@ def commit(message: str):
     with open('.chrono/json', 'w') as f:
         json.dump({}, f)
     print(f"Commit created: {commit_hash} with message: '{message}'")
-
+#this function logs onto all the commits u have made
+#needs some touches it works for now though
 def log():
     with open('.chrono/HEAD', 'r') as f:
         current_commit = f.read().strip()
@@ -84,6 +90,9 @@ def log():
         print(f"Timestamp: {commit_data['timestamp']}")
         print("-" * 40)
         current_commit = commit_data['parent']
+#THE TIME-TRAVEL as i call it just delets the presnt for of file
+#and transports the type of file you wanted to the present
+#depends on your hash to be honest!
 def checkout(commit_hash):
     if not os.path.exists(f'.chrono/commits/{commit_hash}.json'):
         print(f"Commit '{commit_hash}' does not exist.")
@@ -116,7 +125,7 @@ def checkout(commit_hash):
 #add('example-2.txt')
 #commit(' added example-2.txt')
 # log()
-checkout('3b987a609cb70d580369da0049e396ed0dac20cc')
+# checkout('3b987a609cb70d580369da0049e396ed0dac20cc')
 
 
 
