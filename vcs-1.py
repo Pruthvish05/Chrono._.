@@ -16,7 +16,6 @@ def init():
         print("Chrono repository initialized.")
     else:
         print("Chrono repository already exists.")
-init()
 def add(filename):
     if not os.path.exists(filename):
         print(f"File '{filename}' does not exist.")
@@ -93,7 +92,9 @@ def checkout(commit_hash):
         commit_data = json.load(f)
     files = commit_data['files']
     for file in os.listdir():
-        if file in files:
+        if file == '.chrono':
+            continue
+        if file in files and os.path.isfile(file):
             os.remove(file)
     for filepath, file_hash in files.items():
         object_path = f'.chrono/objects/{file_hash}'
@@ -105,8 +106,8 @@ def checkout(commit_hash):
     with open('.chrono/HEAD', 'w') as f:
         f.write(commit_hash)
     print(f"Checked out commit: {commit_hash}")
-    
-    
+    print(f"Restored files: {', '.join(files.keys())}")
+    print(f"THIS WILL OVERWRITE CURRENT FILES IN THE DIRECTORY, MAKE SURE TO COMMIT YOUR CHANGES BEFORE CHECKING OUT ANOTHER COMMIT.")
 # Example usage:
 # init()
 # add('example.txt')
@@ -115,6 +116,7 @@ def checkout(commit_hash):
 #add('example-2.txt')
 #commit(' added example-2.txt')
 # log()
+checkout('3b987a609cb70d580369da0049e396ed0dac20cc')
 
 
 
