@@ -85,7 +85,27 @@ def log():
         print(f"Timestamp: {commit_data['timestamp']}")
         print("-" * 40)
         current_commit = commit_data['parent']
-def checkout():
+def checkout(commit_hash):
+    if not os.path.exists(f'.chrono/commits/{commit_hash}.json'):
+        print(f"Commit '{commit_hash}' does not exist.")
+        return
+    with open(f'.chrono/commits/{commit_hash}.json', 'r') as f:
+        commit_data = json.load(f)
+    files = commit_data['files']
+    for file in os.listdir():
+        if file in files:
+            os.remove(file)
+    for filepath, file_hash in files.items():
+        object_path = f'.chrono/objects/{file_hash}'
+        if os.path.exists(object_path):
+            with open(object_path, 'rb') as f:
+                content = f.read()
+            with open(filepath, 'wb') as f:
+                f.write(content)
+    with open('.chrono/HEAD', 'w') as f:
+        f.write(commit_hash)
+    print(f"Checked out commit: {commit_hash}")
+    
     
 # Example usage:
 # init()
