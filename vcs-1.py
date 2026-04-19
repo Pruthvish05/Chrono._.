@@ -3,6 +3,7 @@
 import os
 import json
 import hashlib
+import difflib
 #in this we will create our db in to the system namly
 #.chrono/ and in that two folders objects/ , commits/ 
 def init():
@@ -117,6 +118,9 @@ def checkout(commit_hash):
     print(f"Checked out commit: {commit_hash}")
     print(f"Restored files: {', '.join(files.keys())}")
     print(f"THIS WILL OVERWRITE CURRENT FILES IN THE DIRECTORY, MAKE SURE TO COMMIT YOUR CHANGES BEFORE CHECKING OUT ANOTHER COMMIT.")
+def diff():
+    # Implementation for diff functionality
+    pass
 # Example usage:
 # init()
 # add('example.txt')
