@@ -120,7 +120,35 @@ def checkout(commit_hash):
     print(f"THIS WILL OVERWRITE CURRENT FILES IN THE DIRECTORY, MAKE SURE TO COMMIT YOUR CHANGES BEFORE CHECKING OUT ANOTHER COMMIT.")
 def diff():
     # Implementation for diff functionality
-    pass
+    if not os.path.exists('.chrono/HEAD'):
+        print("No commits found.")
+        return
+    with open('.chrono/HEAD', 'r') as f:
+        current_commit = f.read().strip()
+    if not current_commit:
+        print("No commits found.")
+        return
+    with open(f'.chrono/commits/{current_commit}.json', 'r') as f:
+        commit_data = json.load(f)
+    for filepath, file_hash in commit_data['files'].items():
+        object_path = f'.chrono/objects/{file_hash}'
+        if os.path.exists(object_path):
+            with open(object_path, 'rb') as f:
+                content = f.read().decode()
+            if os.path.exists(filepath):
+                with open(filepath, 'r') as f:
+                    current_content = f.read()
+                diff = difflib.unified_diff(
+                    current_content.splitlines(),
+                    content.splitlines(),
+                    fromfile='current',
+                    tofile='commit',
+                    lineterm=''
+                )
+                print(f"Diff for {filepath}:")
+                print('\n'.join(diff))
+            else:
+                print(f"File '{filepath}' does not exist in the current directory.")
 # Example usage:
 # init()
 # add('example.txt')
