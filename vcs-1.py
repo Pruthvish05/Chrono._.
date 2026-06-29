@@ -4,6 +4,7 @@ import os
 import json
 import hashlib
 import difflib
+import time
 #in this we will create our db in to the system namly
 #.chrono/ and in that two folders objects/ , commits/ 
 def init():
@@ -60,13 +61,13 @@ def commit(message: str):
     commit_data = {
         'message': message,
         'files': index,
-        'timestamp': int(os.path.getmtime('.chrono/index.json')),
+        'timestamp': int(time.time()),
         'parent': parent
     }
     commit_hash = hashlib.sha1(json.dumps(commit_data).encode()).hexdigest()
     commit_path = f'.chrono/commits/{commit_hash}.json'
     with open(commit_path, 'w') as f:
-        json.dump(commit_data, f, indent=4, sort_keys=True)
+        json.dump(commit_data, f, sort_keys=True)
     with open('.chrono/HEAD', 'w') as f:
         f.write(commit_hash)
     with open('.chrono/index.json', 'w') as f:
