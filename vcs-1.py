@@ -69,7 +69,7 @@ def commit(message: str):
         json.dump(commit_data, f, indent=4, sort_keys=True)
     with open('.chrono/HEAD', 'w') as f:
         f.write(commit_hash)
-    with open('.chrono/json', 'w') as f:
+    with open('.chrono/index.json', 'w') as f:
         json.dump({}, f)
     print(f"Commit created: {commit_hash} with message: '{message}'")
 #this function logs onto all the commits u have made
