@@ -21,6 +21,9 @@ def init():
 #this is a function that well as the name suggests adds a file lol
 #to the area u gotta create the file before hand though.
 def add(filename):
+    if not os.path.exists('.chrono'):
+        print("Chrono repository not initialized. Please run 'init()' first.")
+        return
     if not os.path.exists(filename):
         print(f"File '{filename}' does not exist.")
         return
@@ -41,6 +44,9 @@ def add(filename):
 #commits the message and the files in which you are working not cool yet,
 #more work is needed.
 def commit(message: str):
+    if not os.path.exists('.chrono'):
+        print("Chrono repository not initialized. Please run 'init()' first.")
+        return
     if not message:
         print("Commit message cannot be empty.")
         return
@@ -63,10 +69,13 @@ def commit(message: str):
         'timestamp': int(time.time()),
         'parent': parent
     }
-    commit_hash = hashlib.sha1(json.dumps(commit_data).encode()).hexdigest()
+    commit_hash = hashlib.sha1(json.dumps(commit_data, sort_keys=True).encode()).hexdigest()
     commit_path = f'.chrono/commits/{commit_hash}.json'
     with open(commit_path, 'w') as f:
-        json.dump(commit_data, f, sort_keys=True)
+        json.dump(commit_data, 
+                    f, 
+                    indent=4,
+                    sort_keys=True)
     with open('.chrono/HEAD', 'w') as f:
         f.write(commit_hash)
     with open('.chrono/index.json', 'w') as f:
@@ -75,6 +84,9 @@ def commit(message: str):
 #this function logs onto all the commits u have made
 #needs some touches it works for now though
 def log():
+    if not os.path.exists('.chrono'):
+        print("Chrono repository not initialized. Please run 'init()' first.")
+        return
     with open('.chrono/HEAD', 'r') as f:
         current_commit = f.read().strip()
     if not current_commit:
@@ -101,6 +113,9 @@ def checkout(commit_hash):
     with open(f'.chrono/commits/{commit_hash}.json', 'r') as f:
         commit_data = json.load(f)
     files = commit_data['files']
+    if not os.path.exists('.chrono'):
+        print("Chrono repository not initialized. Please run 'init()' first.")
+        return
     for file in os.listdir():
         if file == '.chrono':
             continue
@@ -120,6 +135,9 @@ def checkout(commit_hash):
     print(f"THIS WILL OVERWRITE CURRENT FILES IN THE DIRECTORY, MAKE SURE TO COMMIT YOUR CHANGES BEFORE CHECKING OUT ANOTHER COMMIT.")
 def diff():
     # Implementation for diff functionality
+    if not os.path.exists('.chrono'):
+        print("Chrono repository not initialized. Please run 'init()' first.")
+        return
     if not os.path.exists('.chrono/HEAD'):
         print("No commits found.")
         return
@@ -134,13 +152,13 @@ def diff():
         object_path = f'.chrono/objects/{file_hash}'
         if os.path.exists(object_path):
             with open(object_path, 'rb') as f:
-                content = f.read().decode()
+                content = f.read().decode("utf-8", errors='ignore')
             if os.path.exists(filepath):
                 with open(filepath, 'r') as f:
                     current_content = f.read()
                 diff = difflib.unified_diff(
-                    current_content.splitlines(),
                     content.splitlines(),
+                    current_content.splitlines(),
                     fromfile='current',
                     tofile='commit',
                     lineterm=''
@@ -149,15 +167,6 @@ def diff():
                 print('\n'.join(diff))
             else:
                 print(f"File '{filepath}' does not exist in the current directory.")
-# Example usage:
-# init()
-# add('example.txt')
-# commit(' something didn\'t work')
-#log()
-#add('example-2.txt')
-#commit(' added example-2.txt')
-# log()
-# checkout('3b987a609cb70d580369da0049e396ed0dac20cc')
 
 
 
