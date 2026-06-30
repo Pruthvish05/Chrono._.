@@ -6,6 +6,11 @@ import difflib
 import time
 #in this we will create our db in to the system namly
 #.chrono/ and in that two folders objects/ , commits/ 
+CHRONO = '.chrono'
+INDEX = os.path.join(CHRONO, 'index.json')
+HEAD = os.path.join(CHRONO, 'HEAD')
+OBJECTS = os.path.join(CHRONO, 'objects')
+COMMITS = os.path.join(CHRONO, 'commits')
 def init():
     print(f"Initializing Chrono repository... in {os.getcwd()}")
     if not os.path.exists('.chrono'):

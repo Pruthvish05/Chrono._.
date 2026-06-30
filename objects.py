@@ -2,8 +2,6 @@ import os
 from constants import CHRONO_DIR, OBJECTS_DIR, COMMITS_DIR, INDEX_FILE, HEAD_FILE
 import json
 import hashlib
-import difflib
-import time
 def add(filename):
     if not os.path.exists(CHRONO_DIR):
         print("Chrono repository not initialized. Please run 'init()' first.")
