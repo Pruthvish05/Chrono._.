@@ -1,4 +1,3 @@
-
 #am also tryna build a habit of writing comments and code in modules so that it can be easily read and maintained in future
 import os
 import json
