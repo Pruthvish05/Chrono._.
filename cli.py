@@ -15,7 +15,7 @@ elif command == "add":
 elif command == "commit":
     commit(args[2])
 elif command == "diff":
-    diff(args[2])
+    diff()
 elif command == "checkout":
     checkout(args[2])
 elif command == "help":

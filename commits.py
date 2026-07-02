@@ -19,6 +19,7 @@ def commit(message: str):
     if not index:
         print("No changes to commit.")
         return
+    parent = ""
     if os.path.exists(HEAD_FILE):
         with open(HEAD_FILE, 'r') as f:
             parent = f.read().strip()
@@ -40,5 +41,5 @@ def commit(message: str):
     with open(HEAD_FILE, 'w') as f:
         f.write(commit_hash)
     with open(INDEX_FILE, 'w') as f:
-        json.dump({}, f)
+        json.dump({}, f, indent=4)
     print(f"Commit created: {commit_hash} with message: '{message}'")
