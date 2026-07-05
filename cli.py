@@ -1,7 +1,7 @@
 import sys
 from repository import init
 from objects import add
-from commits import commit
+from commits import commit, log
 from diff import diff
 from checkout import checkout
 from diff import diff
@@ -18,6 +18,8 @@ elif command == "diff":
     diff()
 elif command == "checkout":
     checkout(args[2])
+elif command == "log":
+    log()
 elif command == "help":
     print("Available commands:")
     print("  init - Initialize a new repository")
@@ -25,6 +27,7 @@ elif command == "help":
     print("  commit <message> - Commit changes with a message")
     print("  diff <file> - Show differences for a file")
     print("  checkout <commit_id> - Checkout a specific commit")
+    print("  log - Show commit history")
 elif command is None:
     print("No command provided. Use 'help' for available commands.")
 elif command not in ["init", "add", "commit", "diff", "checkout", "help"]:

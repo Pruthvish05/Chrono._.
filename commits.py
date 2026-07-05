@@ -60,3 +60,31 @@ def commit(message: str):
     with open(INDEX_FILE, 'w') as f:
         json.dump({}, f, indent=4)
     print(f"Commit created: {commit_hash} with message: '{message}'")
+
+def log():
+    if not os.path.exists(HEAD_FILE):
+        print("Chrono repository not initialized or no commits made yet.")
+        return
+    with open(HEAD_FILE, 'r') as f:
+        current_hash = f.read().strip()
+    if not current_hash:
+        print("No commits yet. Use 'chrono commit' to record your first snapshot.")
+        return
+    print("*--- Commit History ---*\n")
+    while current_hash:
+        commit_path = os.path.join(COMMITS_DIR, f"{current_hash}.json")
+        if not os.path.exists(commit_path):
+            print(f"Critical Error: Commit object '{current_hash}' is missing. History graph broken.")
+            break
+        with open(commit_path, 'r') as f:
+            commit_data = json.load(f)
+        raw_time = commit_data.get('timestamp', 0)
+        formatted_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(raw_time))
+        message = commit_data.get('message', 'No message provided.')
+        parent = commit_data.get('parent')
+        print(f"Commit: {current_hash}")
+        print(f"Date:   {formatted_time}")
+        print(f"Message: {message}")
+        print("files: " + ", ".join(commit_data.get('files', {}).keys()))
+        print("-" * 40)
+        current_hash = parent
