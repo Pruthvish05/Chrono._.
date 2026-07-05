@@ -42,7 +42,7 @@ def commit(message: str):
             content = f.read().strip()
             if content:
                 parent = content
-    full_snapshot = load_commit_snapshot(parent)
+    full_snapshot = load_commit_snapshot(parent) if parent else {}
     full_snapshot.update(index)
     commit_data = {
         'message': message,
@@ -55,8 +55,8 @@ def commit(message: str):
     commit_path = os.path.join(COMMITS_DIR, f"{commit_hash}.json")
     with open(commit_path, 'w') as f:
         json.dump(commit_data, f, indent=4, sort_keys=True)
-        with open(HEAD_FILE, 'w') as f:
-            f.write(commit_hash)
+        with open(HEAD_FILE, 'w') as r:
+            r.write(commit_hash)
     with open(INDEX_FILE, 'w') as f:
         json.dump({}, f, indent=4)
     print(f"Commit created: {commit_hash} with message: '{message}'")
