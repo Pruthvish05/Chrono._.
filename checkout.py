@@ -13,6 +13,7 @@ def checkout(commit_hash: str):
         return
     target_files = load_commit_snapshot(commit_hash)
     print(f"Switching working directory to snapshot: {commit_hash[:7]}...")
+    # 3. Restore Files from Content-Addressable Storage
     for filename, file_hash in target_files.items():
         from constants import OBJECTS_DIR
         object_path = os.path.join(OBJECTS_DIR, file_hash)
@@ -21,6 +22,10 @@ def checkout(commit_hash: str):
             return
         with open(object_path, 'r') as obj_f:
             file_content = obj_f.read()
+        file_dir = os.path.dirname(filename)
+        if file_dir and not os.path.exists(file_dir):
+            os.makedirs(file_dir, exist_ok=True)
+            print(f" Created directory structure: {file_dir}/")
         with open(filename, 'w') as wp_f:
             wp_f.write(file_content)
             

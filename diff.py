@@ -1,38 +1,40 @@
 import os
-from constants import CHRONO_DIR, HEAD_FILE, OBJECTS_DIR, COMMITS_DIR, INDEX_FILE
-import json
 import difflib
+from constants import CHRONO_DIR, HEAD_FILE
+from commits import load_commit_snapshot  # Re-using our snapshot reader!
+
 def diff():
-    # Implementation for diff functionality
     if not os.path.exists(CHRONO_DIR):
-        print("Chrono repository not initialized. Please run 'init()' first.")
+        print("Chrono repository not initialized.")
         return
-    if not os.path.exists(HEAD_FILE):
-        print("No commits found.")
+    parent_hash = None
+    if os.path.exists(HEAD_FILE):
+        with open(HEAD_FILE, 'r') as f:
+            parent_hash = f.read().strip()
+    if not parent_hash:
+        print("No commits made yet. Nothing to compare against.")
         return
-    with open(HEAD_FILE, 'r') as f:
-        current_commit = f.read().strip()
-    if not current_commit:
-        print("No commits found.")
-        return
-    with open(os.path.join(COMMITS_DIR, f"{current_commit}.json"), 'r') as f:
-        commit_data = json.load(f)
-    for filepath, file_hash in commit_data['files'].items():
+    latest_snapshot = load_commit_snapshot(parent_hash)
+    for filename, file_hash in latest_snapshot.items():
+        if not os.path.exists(filename):
+            print(f"\n--- {filename} (Deleted in Working Directory) ---")
+            continue
+        from constants import OBJECTS_DIR
         object_path = os.path.join(OBJECTS_DIR, file_hash)
-        if os.path.exists(object_path):
-            with open(object_path, 'rb') as f:
-                content = f.read().decode("utf-8", errors='ignore')
-            if os.path.exists(filepath):
-                with open(filepath, 'r') as f:
-                    current_content = f.read()
-                diff = difflib.unified_diff(
-                    content.splitlines(),
-                    current_content.splitlines(),
-                    fromfile='current',
-                    tofile='commit',
-                    lineterm=''
-                )
-                print(f"Diff for {filepath}:")
-                print('\n'.join(diff))
-            else:
-                print(f"File '{filepath}' does not exist in the current directory.")
+        with open(object_path, 'r') as f:
+            committed_lines = f.readlines()
+        with open(filename, 'r') as f:
+            working_lines = f.readlines()
+        comparison = difflib.unified_diff(
+            committed_lines,
+            working_lines,
+            fromfile=f"a/{filename} (committed)",
+            tofile=f"b/{filename} (working)",
+            lineterm='' 
+        )
+        diff_list = list(comparison)
+        if diff_list:
+            print(f"\nShowing modifications for: {filename}")
+            print("=" * 40)
+            for line in diff_list:
+                print(line)
