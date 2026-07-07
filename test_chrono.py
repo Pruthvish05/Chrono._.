@@ -8,18 +8,35 @@ import objects
 import commits
 import checkout
 import constants
-constants.CHRONO_DIR = os.path.join(".chrono_test",".chrono")
-constants.INDEX_FILE = os.path.join(constants.CHRONO_DIR, "index.json")
-constants.HEAD_FILE = os.path.join(constants.CHRONO_DIR, "HEAD")
-constants.COMMITS_DIR = os.path.join(constants.CHRONO_DIR, "commits")
+# constants.CHRONO_DIR = os.path.join(".chrono_test",".chrono")
+# constants.INDEX_FILE = os.path.join(constants.CHRONO_DIR, "index.json")
+# constants.HEAD_FILE = os.path.join(constants.CHRONO_DIR, "HEAD")
+# constants.COMMITS_DIR = os.path.join(constants.CHRONO_DIR, "commits")
 class TestChronoVCS(unittest.TestCase):
     def setUp(self):
-        if os.path.exists(".chrono_test"):
-            shutil.rmtree(".chrono_test")
-        os.makedirs(".chrono_test")
-    def tearDown(self):
-        if os.path.exists(".chrono_test"):
-            shutil.rmtree(".chrono_test")
+        self.test_dir = ".chrono_test"
+        test_chrono_dir = os.path.join(self.test_dir, ".chrono")
+        
+        # 1. Update the base constants module
+        constants.CHRONO_DIR = test_chrono_dir
+        constants.OBJECTS_DIR = os.path.join(test_chrono_dir, "objects")
+        constants.COMMITS_DIR = os.path.join(test_chrono_dir, "commits")
+        constants.INDEX_FILE = os.path.join(test_chrono_dir, "index.json")
+        constants.HEAD_FILE = os.path.join(test_chrono_dir, "HEAD")
+
+        # 2. FORCE the updated paths into your individual modules directly
+        import repository, objects, commits, checkout
+        
+        for module in [repository, objects, commits, checkout]:
+            if hasattr(module, 'CHRONO_DIR'): constants.CHRONO_DIR = constants.CHRONO_DIR
+            if hasattr(module, 'OBJECTS_DIR'): constants.OBJECTS_DIR = constants.OBJECTS_DIR
+            if hasattr(module, 'COMMITS_DIR'): constants.COMMITS_DIR = constants.COMMITS_DIR
+            if hasattr(module, 'INDEX_FILE'): constants.INDEX_FILE = constants.INDEX_FILE
+            if hasattr(module, 'HEAD_FILE'): constants.HEAD_FILE = constants.HEAD_FILE
+
+        # 3. Clean and build the fresh sandbox directory structure
+        os.makedirs(self.test_dir, exist_ok=True)
+        repository.init()
 
     def test_repository_initialization(self):
         self.assertTrue(os.path.exists(constants.CHRONO_DIR))
@@ -29,7 +46,7 @@ class TestChronoVCS(unittest.TestCase):
         self.assertTrue(os.path.exists(constants.HEAD_FILE))
 
     def test_add_and_commit_snapshot_flow(self):
-        file_path = os.path.join(".chrono_test", "hello.txt")
+        file_path = os.path.join(self.test_dir, "hello.txt")
         with open(file_path, "w") as f:
             f.write("Hello Chrono World!")
         objects.add(file_path)
@@ -52,12 +69,12 @@ class TestChronoVCS(unittest.TestCase):
         self.assertEqual(commit_data["files"][file_path], staged_hash)
 
     def test_unmodified_files_persist_across_snapshots(self):
-        file_a = os.path.join(".chrono_test", "file_a.txt")
+        file_a = os.path.join(self.test_dir, "file_a.txt")
         with open(file_a, "w") as f:
             f.write("File A data")
         objects.add(file_a)
         commit1_hash = commits.commit("Commit 1")
-        file_b = os.path.join(".chrono_test", "file_b.txt")
+        file_b = os.path.join(self.test_dir, "file_b.txt")
         with open(file_b, "w") as f:
             f.write("File B data")
         objects.add(file_b)
