@@ -1,7 +1,7 @@
 import os
 import difflib
 from constants import CHRONO_DIR, HEAD_FILE
-from commits import load_commit_snapshot  # Re-using our snapshot reader!
+from commits import load_commit_snapshot 
 
 def diff():
     if not os.path.exists(CHRONO_DIR):
@@ -35,6 +35,6 @@ def diff():
         diff_list = list(comparison)
         if diff_list:
             print(f"\nShowing modifications for: {filename}")
-            print("=" * 40)
+            print("*" * 50)
             for line in diff_list:
                 print(line)

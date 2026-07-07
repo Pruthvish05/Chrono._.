@@ -23,3 +23,21 @@ def add(filename):
     with open(INDEX_FILE, 'w') as f:
         json.dump(index, f,indent=4) 
     print(f"File added: {filename} (Hash: {file_hash})")
+
+def rm(filename: str):
+    if not os.path.exists(CHRONO_DIR):
+        print("Chrono repository not initialized. Please run 'init()' first.")
+        return
+    if not os.path.exists(filename):
+        print(f"File '{filename}' does not exist.")
+        return
+    with open(INDEX_FILE, 'r') as f:
+        index = json.load(f)
+    filepath = os.path.relpath(filename)
+    if filepath in index:
+        del index[filepath]
+        with open(INDEX_FILE, 'w') as f:
+            json.dump(index, f, indent=4)
+        print(f"File removed from staging: {filename}")
+    else:
+        print(f"File '{filename}' is not staged for commit.")
