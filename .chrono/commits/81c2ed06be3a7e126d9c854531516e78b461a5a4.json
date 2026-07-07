@@ -1,0 +1,12 @@
+{
+    "files": {
+        ".chrono_test\\file_a.txt": "637426699c64b220966102d9d99a18accd0232c2",
+        ".chrono_test\\file_b.txt": "ae17899b05495a9489752788bbf9b6b6a8dc1c5f",
+        ".chrono_test\\hello.txt": "0a095098f68b91e1d2412773a8096697188672d5",
+        "example.txt": "0221a15d1cda4c83878cbca91bafbfa61fc4ed9c",
+        "vcs-1.py": "82afa2eb92660a30e311eafe55abf58f84a1a079"
+    },
+    "message": "Commit 1",
+    "parent": "869a067a86cee893ce9ae9f007c476fbee3a8ea4",
+    "timestamp": 1783451806
+}
