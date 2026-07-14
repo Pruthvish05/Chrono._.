@@ -3,40 +3,48 @@ import json
 import shutil
 import sys
 import unittest
+
+# Import your core engines
 import repository
 import objects
 import commits
 import checkout
 import constants
-# constants.CHRONO_DIR = os.path.join(".chrono_test",".chrono")
-# constants.INDEX_FILE = os.path.join(constants.CHRONO_DIR, "index.json")
-# constants.HEAD_FILE = os.path.join(constants.CHRONO_DIR, "HEAD")
-# constants.COMMITS_DIR = os.path.join(constants.CHRONO_DIR, "commits")
+
 class TestChronoVCS(unittest.TestCase):
     def setUp(self):
         self.test_dir = ".chrono_test"
         test_chrono_dir = os.path.join(self.test_dir, ".chrono")
         
-        # 1. Update the base constants module
+        # 1. Update the base constants module values
         constants.CHRONO_DIR = test_chrono_dir
         constants.OBJECTS_DIR = os.path.join(test_chrono_dir, "objects")
         constants.COMMITS_DIR = os.path.join(test_chrono_dir, "commits")
         constants.INDEX_FILE = os.path.join(test_chrono_dir, "index.json")
         constants.HEAD_FILE = os.path.join(test_chrono_dir, "HEAD")
 
-        # 2. FORCE the updated paths into your individual modules directly
+# 2. FORCE the updated paths directly into your individual module namespaces safely
         import repository, objects, commits, checkout
         
         for module in [repository, objects, commits, checkout]:
-            if hasattr(module, 'CHRONO_DIR'): constants.CHRONO_DIR = constants.CHRONO_DIR
-            if hasattr(module, 'OBJECTS_DIR'): constants.OBJECTS_DIR = constants.OBJECTS_DIR
-            if hasattr(module, 'COMMITS_DIR'): constants.COMMITS_DIR = constants.COMMITS_DIR
-            if hasattr(module, 'INDEX_FILE'): constants.INDEX_FILE = constants.INDEX_FILE
-            if hasattr(module, 'HEAD_FILE'): constants.HEAD_FILE = constants.HEAD_FILE
+            setattr(module, 'CHRONO_DIR', constants.CHRONO_DIR)
+            setattr(module, 'OBJECTS_DIR', constants.OBJECTS_DIR)
+            setattr(module, 'COMMITS_DIR', constants.COMMITS_DIR)
+            setattr(module, 'INDEX_FILE', constants.INDEX_FILE)
+            setattr(module, 'HEAD_FILE', constants.HEAD_FILE)
 
-        # 3. Clean and build the fresh sandbox directory structure
+        # 3. Clean up any stale test sandbox directories from previous runs
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+            
+        # 4. Build the fresh sandbox structure using your engine
         os.makedirs(self.test_dir, exist_ok=True)
         repository.init()
+
+    def tearDown(self):
+        # Clean up the sandbox after tests finish execution
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
 
     def test_repository_initialization(self):
         self.assertTrue(os.path.exists(constants.CHRONO_DIR))
@@ -55,13 +63,17 @@ class TestChronoVCS(unittest.TestCase):
             index = json.load(f)
         self.assertIn(file_path, index)
         staged_hash = index[file_path]
+        
         commit_hash = commits.commit("First test snapshot")
+        
         with open(constants.INDEX_FILE, "r") as f:
             post_index = json.load(f)
         self.assertEqual(post_index, {})
+        
         with open(constants.HEAD_FILE, "r") as f:
             current_head = f.read().strip()
         self.assertEqual(current_head, commit_hash)
+        
         commit_file_path = os.path.join(constants.COMMITS_DIR, f"{commit_hash}.json")
         with open(commit_file_path, "r") as f:
             commit_data = json.load(f)
@@ -74,14 +86,18 @@ class TestChronoVCS(unittest.TestCase):
             f.write("File A data")
         objects.add(file_a)
         commit1_hash = commits.commit("Commit 1")
+        
         file_b = os.path.join(self.test_dir, "file_b.txt")
         with open(file_b, "w") as f:
             f.write("File B data")
         objects.add(file_b)
         commit2_hash = commits.commit("Commit 2")
+        
+        # FIX: Changed from reading constants.INDEX_FILE to reading the commit2 JSON snapshot
         commit2_path = os.path.join(constants.COMMITS_DIR, f"{commit2_hash}.json")
-        with open(constants.INDEX_FILE, "r") as f:
+        with open(commit2_path, "r") as f:
             commit2_data = json.load(f)
+            
         self.assertIn(file_a, commit2_data["files"])
         self.assertIn(file_b, commit2_data["files"])
         self.assertEqual(commit2_data["parent"], commit1_hash)

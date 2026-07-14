@@ -60,6 +60,7 @@ def commit(message: str):
     with open(INDEX_FILE, 'w') as f:
         json.dump({}, f, indent=4)
     print(f"Commit created: {commit_hash} with message: '{message}'")
+    return commit_hash
 
 def log():
     if not os.path.exists(HEAD_FILE):
