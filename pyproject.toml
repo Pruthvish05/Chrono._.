@@ -11,11 +11,15 @@ authors = [
 description = "A snapshot-based Version Control System built from scratch in Python."
 readme = "README.md"
 requires-python = ">=3.8"
+license = { text = "MIT License" }  # Fixes the License Warning
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
 [project.scripts]
 chrono = "cli:main"
+
+# CRITICAL FIX: Explicitly list your flat modules so setuptools doesn't guess
+[tool.setuptools]
+py-modules = ["checkout", "cli", "commits", "constants", "diff", "objects", "repository", "utils"]

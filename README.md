@@ -8,7 +8,20 @@ The primary objective of this project is to gain a deep understanding of reposit
 
 > **Current Version:** v1.0.0 (Stable Local Core)
 
----
+# 📦 Installation & Setup
+
+Chrono can be installed either directly from the pre-built package distribution or run directly from the source code.
+
+## Option 1: Install Pre-Built Distribution (Recommended)
+
+This method installs Chrono system-wide, allowing you to run the `chrono` command from any terminal directory, exactly like real Git.
+
+1. Download the `chrono_vcs-1.0.0-py3-none-any.whl` file from the [GitHub Releases](link-to-your-release) page.
+2. Open your terminal or command prompt and navigate to the directory where you downloaded the file (e.g., your Downloads folder).
+3. Run the following command to install it via pip:
+   ```bash
+   pip install chrono_vcs-1.0.0-py3-none-any.whl
+   ```
 
 # Features
 
