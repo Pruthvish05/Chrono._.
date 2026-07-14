@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chrono-vcs"
+version = "1.0.0"
+authors = [
+  { name="Pruthvish S Kulkarni", email="pruthvishkulkarni572@gmail.com" },
+]
+description = "A snapshot-based Version Control System built from scratch in Python."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+chrono = "cli:main"

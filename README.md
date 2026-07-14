@@ -6,7 +6,7 @@ Chrono is an educational implementation of a Version Control System (VCS). Inste
 
 The primary objective of this project is to gain a deep understanding of repository architecture, content-addressable storage, snapshots, commit history, and file restoration.
 
-> **Current Version:** v1.0.0 (In Development)
+> **Current Version:** v1.0.0 (Stable Local Core)
 
 ---
 
